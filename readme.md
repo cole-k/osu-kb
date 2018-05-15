@@ -252,6 +252,7 @@ is the reason why lighting is not per-key.
 ### Future 
 
 TBD
+* Clean up code and comment better.
 * Make it so that the keyboard doesn't disconnect when you enter
   a configuration mode.
 * Make it so that the only way to enter configuration mode is by pressing and
