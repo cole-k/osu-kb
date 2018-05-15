@@ -5,12 +5,12 @@
 // Also try enabling the Trinket to run at 16 MHz. Running at 8 MHz
 // (the default) will draw about 3mA less current, though.
 //
-// Pressing X and Z for longer than CONFIG_COUNT will
+// Pressing X and Z for longer than CONFIG_DELAY will
 // enter brightness config mode, and the lights will blink thrice.
 // In this mode, you can change the brightness of the lights by
 // pressing X and exit by pressing Z.
 //
-// Pressing Z for longer than CONFIG_COUNT will enter LED mode
+// Pressing Z for longer than CONFIG_DELAY will enter LED mode
 // config mode, and the lights will blink twice. In this mode,
 // you can change the LED mode by pressing X. The LED mode being always on
 // is denoted by the LEDs being on. The LED mode being keypress
@@ -31,7 +31,7 @@
 #define POLL_DELAY   4
 
 // How long to wait before entering config mode, in ms.
-#define CONFIG_COUNT 4000
+#define CONFIG_DELAY 4000
 // How long to wait before accepting input again after changing
 // brightness in config mode. This is high to make it easier to
 // select a desired brightness.
@@ -213,7 +213,7 @@ void keyFunction()
     ZXCount += 1;
     // If both buttons have been pressed for longer than
     // the config wait, configure the LED brightness.
-    if ((POLL_DELAY * ZXCount)  > CONFIG_COUNT)
+    if ((POLL_DELAY * ZXCount)  > CONFIG_DELAY)
     {
       TrinketKeyboard.pressKey(0, 0, 0);
       configureLEDBrightness();
@@ -226,7 +226,7 @@ void keyFunction()
     ZCount += 1;
     // If z is pressed for longer than the
     // the config wait, configure the LED mode.
-    if ((POLL_DELAY * ZCount)  > CONFIG_COUNT)
+    if ((POLL_DELAY * ZCount)  > CONFIG_DELAY)
     {
       TrinketKeyboard.pressKey(0, 0, 0);
       configureLEDMode();
