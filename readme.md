@@ -14,6 +14,10 @@
 
 ### About
 
+![osu! keyboard picture](images/osu-kb.jpg)
+
+[Album](https://imgur.com/a/kQkXmyP).
+
 This is a simple osu! keyboard made for the ATtiny85 (specifically, the
 [Adafruit Trinket](https://www.adafruit.com/product/1501)). It works by using
 V-USB to emulate an actual keyboard.
