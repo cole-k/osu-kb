@@ -167,7 +167,6 @@ Here are some tips:
   shoddy wiring and I'll have to redo everything from scratch.
 
 Click for a larger image.
-
 <a href="images/kb-wiring-diagram.png"><img src="images/kb-wiring-diagram.png"
 width="500" ></a>
 
@@ -222,7 +221,7 @@ Use the keyboard as, well, a keyboard. There are a couple of extra features
 that you can configure without changing the firmware.
 
 When you enter a configuration mode, your computer may inform you that your
-keyboard has disconnected. If the keyboard does not continue to send updates
+keyboard has disconnected. This is because if the keyboard does not continue to send updates
 every approximately 10 milliseconds, it will disconnect. However, the keyboard
 just reconnects when you exit the mode.
 
