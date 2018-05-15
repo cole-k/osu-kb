@@ -6,15 +6,20 @@
 // (the default) will draw about 3mA less current, though.
 //
 // Pressing X and Z for longer than CONFIG_DELAY will
-// enter brightness config mode, and the lights will blink thrice.
-// In this mode, you can change the brightness of the lights by
-// pressing X and exit by pressing Z.
+// enter the configuration menu and the LEDs will blink thrice.
+// If you press X, you'll be taken to the LED brightness configuration
+// and if you press Z, you'll be taken to the LED mode configuration.
 //
-// Pressing Z for longer than CONFIG_DELAY will enter LED mode
-// config mode, and the lights will blink twice. In this mode,
-// you can change the LED mode by pressing X. The LED mode being always on
-// is denoted by the LEDs being on. The LED mode being keypress
-// is denoted by the LEDs being off. Press Z to exit.
+// In the LED brightness configuration, pressing X will cycle through
+// various levels of brightness. Pressing Z will exit and save the
+// brightness selected.
+//
+// In the LED mode configuration, pressing X will toggle between
+// Always On and Keypress mode. The LEDs will turn on if in Always On
+// mode; they will be off if in Keypress mode. Pressing Z will save
+// the mode selected and exit.
+//
+// Any changes made in the configuration mode are retained upon restart.
 
 // Keyboard.
 #include <TrinketKeyboard.h>
@@ -27,7 +32,7 @@
 #define PIN_X 0
 #define PIN_LEDS 1
 
-// How long to wait before polling again (prevent debouncing).
+// How long to wait before polling again (for debouncing).
 #define POLL_DELAY   4
 
 // How long to wait before entering config mode, in ms.
@@ -43,7 +48,7 @@
 #define KEYPRESS  0
 #define ALWAYS_ON 1
 
-// EEPROM Address
+// EEPROM Addresses
 #define BRIGHTNESS_ADR 0
 #define LEDMODE_ADR 1
 
@@ -52,7 +57,6 @@ int prevState = 0;
 // Count of how many times both keys have been held
 // (this is used to enter config mode).
 unsigned short ZXCount = 0;
-unsigned short ZCount = 0;
 uint8_t brightness = 0;
 uint8_t ledMode = ALWAYS_ON;
 
@@ -97,102 +101,172 @@ void blinkLEDs(int duration)
 }
 
 void configureLEDBrightness()
-{
-  // Blink the LEDs thrice to signify entering config mode.
-  blinkLEDs(500);
-  blinkLEDs(500);
-  blinkLEDs(500);
+{ 
+  bool zPressed = false;
+  bool xPressed = false;
+  unsigned long lastCheck = millis();
   
-  bool z = false;
-  bool x = false;
-  while (1)
+  // Loop while z is not pressed.
+  while (!zPressed)
   {
-    delay(CONFIG_POLL_DELAY);
-    bool z = !digitalRead(PIN_Z);
-    bool x = !digitalRead(PIN_X);
-    // Add to brightness if x is pressed.
-    if (x)
+    // Only execute this every CONFIG_POLL_DELAY ms.
+    // This debounces the inputs.
+    if (millis() - lastCheck > CONFIG_POLL_DELAY)
     {
-      brightness += 16;
+      bool zPressed = !digitalRead(PIN_Z);
+      bool xPressed = !digitalRead(PIN_X);
+      
+      // Add to brightness if x is pressed.
+      if (xPressed)
+      {
+        brightness += 16;
+        
+        // Set the LEDs to that brightness.
+        analogWrite(PIN_LEDS, brightness);
+      }
+
+      // Update lastCheck.
+      lastCheck = millis();
     }
-    // Write 0 if the LEDState is off to blink.
-    analogWrite(PIN_LEDS, brightness);
-    // Exit if z is pressed.
-    if (z)
-    {
-      // Save the brightness.
-      EEPROM.write(BRIGHTNESS_ADR, brightness);
-      TrinketKeyboard.begin();
-      return;
-    }
+
+    // Send empty keypress to keep connection to computer.
+    TrinketKeyboard.pressKey(0, 0);
+    
+    // Avoid spamming the computer by waiting
+    // POLL_DELAY between each cycle
+    delay(POLL_DELAY);
   }
+  
+  // Save the brightness.
+  EEPROM.write(BRIGHTNESS_ADR, brightness);
 }
 
 void configureLEDMode()
+{ 
+  bool zPressed = false;
+  bool xPressed = false;
+  unsigned long lastCheck = millis();
+  
+  // Loop while z is not pressed.
+  while (!zPressed)
+  {
+    // Only execute this every CONFIG_POLL_DELAY ms.
+    // This debounces the inputs.
+    if (millis() - lastCheck > CONFIG_POLL_DELAY)
+    {
+      bool zPressed = !digitalRead(PIN_Z);
+      bool xPressed = !digitalRead(PIN_X);
+      
+      // Toggle LED mode if x is pressed.
+      if (xPressed)
+      {
+        ledMode = !ledMode;
+        
+        // Set the LEDs to indicate LED Mode.
+        digitalWrite(PIN_LEDS, ledMode);
+      }
+
+      // Update lastCheck.
+      lastCheck = millis();
+    }
+
+    // Send empty keypress to keep connection to computer.
+    TrinketKeyboard.pressKey(0, 0);
+    
+    // Avoid spamming the computer by waiting
+    // POLL_DELAY between each cycle
+    delay(POLL_DELAY);
+  }
+  
+    // Save the LED mode.
+    EEPROM.write(LEDMODE_ADR, ledMode);
+    // Reset the LEDs.
+    analogWrite(PIN_LEDS, LOW);
+    setupLEDs();
+}
+
+void configurationMenu()
 {
-  // Blink the LEDs twice to signify entering config mode.
+  // Blink LEDs thrice to denote configuration mode.
+  blinkLEDs(500);
   blinkLEDs(500);
   blinkLEDs(500);
   
-  bool z = false;
-  bool x = false;
+  bool zPressed = false;
+  bool xPressed = false;
+  unsigned long lastCheck = millis();
+  
   while (1)
   {
-    delay(CONFIG_POLL_DELAY);
-    bool z = !digitalRead(PIN_Z);
-    bool x = !digitalRead(PIN_X);
-    // Toggle LED mode if x is pressed.
-    if (x)
+    // Only execute this every CONFIG_POLL_DELAY ms.
+    // This debounces the inputs.
+    if (millis() - lastCheck > CONFIG_POLL_DELAY)
     {
-      ledMode = !ledMode;
+      bool zPressed = !digitalRead(PIN_Z);
+      bool xPressed = !digitalRead(PIN_X);
+      
+      // Configure LED Brightness if x is pressed.
+      if (xPressed)
+      {
+        configureLEDBrightness();
+        return;
+      }
+
+      if (zPressed)
+      {
+        configureLEDMode();
+        return;
+      }
+
+      // Update lastCheck.
+      lastCheck = millis();
     }
-    digitalWrite(PIN_LEDS, ledMode);
-    // Exit if z is pressed.
-    if (z)
-    {
-      // Save the LED mode.
-      EEPROM.write(LEDMODE_ADR, ledMode);
-      // Reset the LEDs.
-      analogWrite(PIN_LEDS, LOW);
-      setupLEDs();
-      TrinketKeyboard.begin();
-      return;
-    }
+
+    // Send empty keypress to keep connection to computer.
+    TrinketKeyboard.pressKey(0, 0);
+    
+    // Avoid spamming the computer by waiting
+    // POLL_DELAY between each cycle
+    delay(POLL_DELAY);
   }
 }
 
 void keyFunction()
 {
-  bool z = !digitalRead(PIN_Z);
-  bool x = !digitalRead(PIN_X);
-  // compress so that it can be used in a switch.
-  int state = (2*z) + x;
+  bool zPressed = !digitalRead(PIN_Z);
+  bool xPressed = !digitalRead(PIN_X);
+  
+  // Convert tuples of (xPressed, zPressed)
+  // to a single integral value (think base decoding).
+  int state = (2*zPressed) + xPressed;
+  
+  // Only do anything if the state has changed.
   if (state != prevState)
   {
     switch (state)
     {
+      // Nothing pressed
       case 0:
         TrinketKeyboard.pressKey(0, 0);
         break;
+      // x pressed.
       case 1:
         TrinketKeyboard.pressKey(0, KEYCODE_X);
         break;
+      // z pressed.
       case 2:
         TrinketKeyboard.pressKey(0, KEYCODE_Z);
         break;
+      // both pressed.
       case 3:
         TrinketKeyboard.pressKey(0, KEYCODE_X, KEYCODE_Z);
         break;
     }
+    // If Z and X are no longer being pressed.
     if (state != 3)
     {
-      // reset led brightness config check.
+      // Reset config check.
       ZXCount = 0;
-    }
-    if (state != 2)
-    {
-      // reset led mode config check.
-      ZCount = 0;
     }
     // If the mode is keypress, toggle the LEDs depending
     // on whether the keys are pressed.
@@ -207,31 +281,21 @@ void keyFunction()
         analogWrite(PIN_LEDS, brightness);
       }
     }
-  } else if (state == 3)
+  }
+  // If the state hasn't changed and both keys are pressed.
+  else if (state == 3)
   {
-    // If both buttons are pressed, continue to increment the counter.
+    // Increment the counter.
     ZXCount += 1;
+    
     // If both buttons have been pressed for longer than
     // the config wait, configure the LED brightness.
     if ((POLL_DELAY * ZXCount)  > CONFIG_DELAY)
     {
-      TrinketKeyboard.pressKey(0, 0, 0);
-      configureLEDBrightness();
+      TrinketKeyboard.pressKey(0, 0);
+      configurationMenu();
       // Reset the count.
       ZXCount = 0;
-    }
-  } else if (state == 2)
-  {
-    // If z is pressed, continue to increment the counter.
-    ZCount += 1;
-    // If z is pressed for longer than the
-    // the config wait, configure the LED mode.
-    if ((POLL_DELAY * ZCount)  > CONFIG_DELAY)
-    {
-      TrinketKeyboard.pressKey(0, 0, 0);
-      configureLEDMode();
-      // Reset the count.
-      ZCount = 0;
     }
   }
   prevState = state;
@@ -240,7 +304,7 @@ void keyFunction()
 
 void loop() {
   TrinketKeyboard.poll();
-  // prevent debouncing
+  // Debounce.
   delay(POLL_DELAY);
   keyFunction();
 }
