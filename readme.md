@@ -256,6 +256,7 @@ TBD
   a configuration mode.
 * Make it so that the only way to enter configuration mode is by pressing and
   holding both Z and X (unlikeliest to be done during actual play). 
+* Add pictures (will likely take a while for me to do as I don't have the keyboard anymore).
 
 Maybes
 * I would like to make an (open source) PCB for this project since wiring was a
