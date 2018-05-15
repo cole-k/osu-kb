@@ -171,7 +171,6 @@ Here are some tips:
   shoddy wiring and I'll have to redo everything from scratch.
 
 Click for a larger image.
-
 <a href="images/kb-wiring-diagram.png"><img src="images/kb-wiring-diagram.png"
 width="500" ></a>
 
@@ -226,7 +225,7 @@ Use the keyboard as, well, a keyboard. There are a couple of extra features
 that you can configure without changing the firmware.
 
 When you enter a configuration mode, your computer may inform you that your
-keyboard has disconnected. If the keyboard does not continue to send updates
+keyboard has disconnected. This is because if the keyboard does not continue to send updates
 every approximately 10 milliseconds, it will disconnect. However, the keyboard
 just reconnects when you exit the mode.
 
@@ -257,10 +256,12 @@ is the reason why lighting is not per-key.
 ### Future 
 
 TBD
+* Clean up code and comment better.
 * Make it so that the keyboard doesn't disconnect when you enter
   a configuration mode.
 * Make it so that the only way to enter configuration mode is by pressing and
   holding both Z and X (unlikeliest to be done during actual play). 
+* Add pictures (will likely take a while for me to do as I don't have the keyboard anymore).
 
 Maybes
 * I would like to make an (open source) PCB for this project since wiring was a
