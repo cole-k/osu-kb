@@ -22,6 +22,16 @@ This is a simple osu! keyboard made for the ATtiny85 (specifically, the
 [Adafruit Trinket](https://www.adafruit.com/product/1501)). It works by using
 V-USB to emulate an actual keyboard.
 
+**Important note: because V-USB only
+implements USB 1.1, the polling rate of the keyboard is effectively limited
+to 125 Hz, or once per every 8 ms. If your level of play necessitates more
+precision than this, please purchase a microcontroller that natively supports
+USB 2.0 or higher.** The cost of an ATtiny85-based microcontroller is so low
+(even the "legit" ones are closer to 7 bucks, e.g. from Adafruit) that
+you may as well purchase and use one if you're on the fence and then upgrade if
+it doesn't suffice. Make sure the controller you upgrade to has "native" USB
+support, e.g. Teensy LC.
+
 The ATtiny85, though limited in comparison to other microcontrollers typically
 used for keyboards (like the ATmega32u4), functions perfectly for use as an
 osu! keyboard. 
