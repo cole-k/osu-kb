@@ -113,8 +113,8 @@ void configureLEDBrightness()
     // This debounces the inputs.
     if (millis() - lastCheck > CONFIG_POLL_DELAY)
     {
-      bool zPressed = !digitalRead(PIN_Z);
-      bool xPressed = !digitalRead(PIN_X);
+      zPressed = !digitalRead(PIN_Z);
+      xPressed = !digitalRead(PIN_X);
       
       // Add to brightness if x is pressed.
       if (xPressed)
@@ -154,8 +154,8 @@ void configureLEDMode()
     // This debounces the inputs.
     if (millis() - lastCheck > CONFIG_POLL_DELAY)
     {
-      bool zPressed = !digitalRead(PIN_Z);
-      bool xPressed = !digitalRead(PIN_X);
+      zPressed = !digitalRead(PIN_Z);
+      xPressed = !digitalRead(PIN_X);
       
       // Toggle LED mode if x is pressed.
       if (xPressed)
