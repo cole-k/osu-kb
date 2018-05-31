@@ -234,26 +234,22 @@ your keyboard in until you can use it.
 Use the keyboard as, well, a keyboard. There are a couple of extra features
 that you can configure without changing the firmware.
 
-When you enter a configuration mode, your computer may inform you that your
-keyboard has disconnected. This is because if the keyboard does not continue to send updates
-every approximately 10 milliseconds, it will disconnect. However, the keyboard
-just reconnects when you exit the mode.
+To configure the LED settings, hold down both Z and X until the keyboard's
+lights blink thrice. This indicates you are in the configuration menu.
+Pressing the X key will take you to the LED brightness configuration and
+pressing the Z key will take you to the LED mode configuration.
 
-To set the brightness of the LEDs, hold down both Z and X until the keyboard's
-lights blink thrice. This signifies the keyboard is in LED brightness
-configuration.  Press the X key to cycle through various levels of brightness,
-and then the Z key to save and return. This will save your light level
-peference to EEPROM, so even if the keyboard is restarted, it will retain that
-value. 
+In the LED brightness configuration, press the X key to cycle through various
+levels of brightness, and then the Z key to save and return. This will save
+your light level peference to EEPROM, so even if the keyboard is restarted, it
+will retain that value. 
 
-To change the LED mode, hold down the Z key until the keyboard's lights blink
-twice. This signifies the keyboard is in LED mode configuration. Press the X
-key to toggle between Always On and Keypress (Always On is denoted by the
-lights on the keyboard being on in this mode, and Keypress is denoted by them
-being off). In Always On mode, the LEDs are always on. Unless you've set the
-brightness to 0, in which case they're always off. In Keypress mode, the LEDs
-only turn on when at least one key is held down. Press the Z key to save
-and return.
+In the LED mode configuration, press the X key to toggle between Always On and
+Keypress (Always On is denoted by the lights on the keyboard being on in this
+mode, and Keypress is denoted by them being off). In Always On mode, the LEDs
+are always on. Unless you've set the brightness to 0, in which case they're
+always off. In Keypress mode, the LEDs only turn on when at least one key is
+held down. Press the Z key to save to EEPROM and return.
 
 ### Bugs
 
